@@ -721,8 +721,8 @@
 			"backward_message" = "unfastened external armor layer"
 		),
 		list(
-			"key" = /obj/item/assembly/signaler/anomaly/bluespace,
-			"action" = ITEM_DELETE,
+			"key" = /obj/item/assembly/signaler/anomaly,
+			"action" = ITEM_MOVE_INSIDE,
 			"back_key" = TOOL_WELDER,
 			"desc" = "The external armor is welded, and the <b>bluespace anomaly core</b> socket is open.",
 			"icon_state" = "phazon24",

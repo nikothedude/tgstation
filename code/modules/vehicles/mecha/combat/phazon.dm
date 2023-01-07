@@ -21,6 +21,14 @@
 	)
 	phase_state = "phazon-phase"
 
+	var/obj/item/assembly/signaler/anomaly/core
+	var/datum/phazon_effect/effect
+
+/obj/vehicle/sealed/mecha/phazon/Initialize(mapload)
+	. = ..()
+
+	effect = new GLOB.anomaly_core_phazon_effects[core]
+
 /datum/armor/mecha_phazon
 	melee = 30
 	bullet = 30
@@ -29,6 +37,8 @@
 	bomb = 30
 	fire = 100
 	acid = 100
+
+/datum/armor/mecha_phazon/proc/generate()
 
 /obj/vehicle/sealed/mecha/phazon/generate_actions()
 	. = ..()
