@@ -13,9 +13,14 @@ export const Fabricator = (props, context) => {
 
   // Reduce the material count array to a map of actually available materials.
   const availableMaterials: MaterialMap = {};
+  const availableReagents: MaterialMap = {};
 
   for (const material of data.materials) {
     availableMaterials[material.name] = material.amount;
+  }
+
+  for (const reagent of data.reagents) {
+    availableReagents[reagent.name] = reagent.volume;
   }
 
   return (

@@ -5,6 +5,16 @@ import { BooleanLike } from 'common/react';
  */
 export type MaterialMap = Record<string, number>;
 
+export type Reagent = {
+  name: string;
+
+  ref: string;
+
+  volume: number;
+
+  color: string;
+};
+
 /**
  * A single, uniquely identifiable material.
  */
@@ -98,6 +108,12 @@ export type FabricatorData = {
    * The materials available to the fabricator, via ore silo or local storage.
    */
   materials: Material[];
+
+  /**
+   * The reagents available to the fabricator via local storage.
+   */
+
+  reagents: Reagent[];
 
   /**
    * The name of the fabricator, as displayed on the title bar.

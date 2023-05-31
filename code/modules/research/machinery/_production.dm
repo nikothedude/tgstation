@@ -128,23 +128,32 @@
 	var/size32x32 = "[spritesheet.name]32x32"
 
 	var/max_multiplier
+	var/max_reagent_multiplier
 	var/coefficient
 	for(var/datum/design/design in cached_designs)
 		var/cost = list()
+		var/list/reagent_cost = list()
 		coefficient = efficient_with(design.build_path) ? efficiency_coeff : 1
 		for(var/datum/material/material in design.materials)
 			cost[material.name] = design.materials[material] * coefficient
 			max_multiplier = min(50, round(materials.mat_container.get_material_amount(material) / (design.materials[material] * coefficient)))
+
+		for (var/datum/reagent/reagent in design.reagents_list)
+			reagent_cost[reagent.name] = design.reagents_list[reagent]
+			max_reagent_multiplier = min(50, round(reagents.get_reagent_amount(reagent) / (design.materials[material] * coefficient)))
+
 		var/icon_size = spritesheet.icon_size_id(design.id)
 
 		designs[design.id] = list(
 			"name" = design.name,
 			"desc" = design.get_description(),
 			"cost" = cost,
+			"reagentcost" = reagent_cost,
 			"id" = design.id,
 			"categories" = design.category,
 			"icon" = "[icon_size == size32x32 ? "" : "[icon_size] "][design.id]",
 			"constructionTime" = 0,
+			"maxreagentmult" = max_reagent_multiplier,
 			"maxmult" = max_multiplier
 		)
 
@@ -158,11 +167,28 @@
 
 	data["materials"] = materials.mat_container?.ui_data()
 	data["onHold"] = materials.on_hold()
+	data["reagents"] = get_relevant_reagents()
 	data["busy"] = busy
 	data["materialMaximum"] = materials.local_size
 	data["queue"] = list()
 
 	return data
+
+/obj/machinery/rnd/production/proc/get_relevant_reagents()
+	RETURN_TYPE(/list)
+
+	var/list/datum/reagent/relevant_reagents = list()
+	var/list/datum/reagent/required_reagents = list()
+	for (var/datum/design/design in cached_designs)
+		for (var/datum/reagent/found_reagent in design.reagents_list)
+			if (found_reagent in required_reagents)
+				continue
+			required_reagents += found_reagent
+
+	for (var/datum/reagent/required_reagent as anything in required_reagents)
+		relevant_reagents[required_reagent] = reagents.get_reagent_amount(required_reagent.type)
+
+	return relevant_reagents
 
 /obj/machinery/rnd/production/ui_act(action, list/params)
 	. = ..()
