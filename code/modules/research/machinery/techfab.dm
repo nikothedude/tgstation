@@ -6,3 +6,9 @@
 	console_link = FALSE
 	production_animation = "protolathe_n"
 	allowed_buildtypes = PROTOLATHE | IMPRINTER
+
+
+/obj/machinery/rnd/production/techfab/Initialize(mapload)
+	. = ..()
+
+	reagents.flags &= ~REFILLABLE // apparantly, according to the person that did the tgui, this shti dont support reagents anymore
