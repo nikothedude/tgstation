@@ -225,13 +225,14 @@
 /mob/living/simple_animal/bot/cleanbot/emag_act(mob/user, obj/item/card/emag/emag_card)
 	. = ..()
 	if(!(bot_cover_flags & BOT_COVER_EMAGGED))
-		return
+		return FALSE
 
 	if(weapon)
 		weapon.force = initial(weapon.force)
 	if(user)
 		to_chat(user, span_danger("[src] buzzes and beeps."))
 	get_targets() //recalibrate target list
+	return TRUE
 
 /mob/living/simple_animal/bot/cleanbot/process_scan(atom/scan_target)
 	if(iscarbon(scan_target))

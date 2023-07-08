@@ -103,9 +103,10 @@
 /mob/living/simple_animal/bot/floorbot/emag_act(mob/user)
 	..()
 	if(!(bot_cover_flags & BOT_COVER_EMAGGED))
-		return
+		return FALSE
 	if(user)
 		to_chat(user, span_danger("[src] buzzes and beeps."))
+	return TRUE
 
 ///mobs should use move_resist instead of anchored.
 /mob/living/simple_animal/bot/floorbot/proc/toggle_magnet(engage = TRUE, change_icon = TRUE)

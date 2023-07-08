@@ -106,7 +106,7 @@
 /mob/living/simple_animal/bot/firebot/emag_act(mob/user)
 	..()
 	if(!(bot_cover_flags & BOT_COVER_EMAGGED))
-		return
+		return FALSE
 	if(user)
 		to_chat(user, span_danger("[src] buzzes and beeps."))
 	audible_message(span_danger("[src] buzzes oddly!"))
@@ -123,6 +123,7 @@
 	internal_ext.precision = FALSE
 	internal_ext.max_water = INFINITY
 	internal_ext.refill()
+	return TRUE
 
 // Variables sent to TGUI
 /mob/living/simple_animal/bot/firebot/ui_data(mob/user)

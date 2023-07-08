@@ -317,13 +317,14 @@
 /obj/structure/training_machine/emag_act(mob/user)
 	. = ..()
 	if (obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	remove_attached_item(throwing = TRUE) //Toss out the old attached item!
 	attach_item(new /obj/item/storage/toolbox/syndicate(src))
 	to_chat(user, span_warning("You override the training machine's safety protocols, and activate its realistic combat feature. A toolbox pops out of a slot on the top."))
 	playsound(src, 'sound/machines/click.ogg', 50, TRUE)
 	add_overlay("evil_trainer")
+	return TRUE
 
 /obj/structure/training_machine/examine(mob/user)
 	. = ..()

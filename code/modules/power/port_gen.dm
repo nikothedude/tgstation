@@ -211,10 +211,11 @@
 
 /obj/machinery/power/port_gen/pacman/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	to_chat(user, span_notice("You hear a hefty clunk from inside the generator."))
 	emp_act(EMP_HEAVY)
+	return TRUE
 
 /obj/machinery/power/port_gen/pacman/attack_ai(mob/user)
 	interact(user)

@@ -187,6 +187,7 @@
 
 /obj/vehicle/ridden/wheelchair/motorized/emag_act(mob/user)
 	if((obj_flags & EMAGGED) || !panel_open)
-		return
+		return FALSE
 	to_chat(user, span_warning("A bomb appears in [src], what the fuck?"))
 	obj_flags |= EMAGGED
+	return TRUE

@@ -1065,7 +1065,8 @@
  * Default behaviour is to send [COMSIG_ATOM_EMAG_ACT] and return
  */
 /atom/proc/emag_act(mob/user, obj/item/card/emag/emag_card)
-	SEND_SIGNAL(src, COMSIG_ATOM_EMAG_ACT, user, emag_card)
+	return SEND_SIGNAL(src, COMSIG_ATOM_EMAG_ACT, user, emag_card)
+
 
 /**
  * Respond to narsie eating our atom

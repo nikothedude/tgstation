@@ -218,10 +218,11 @@ GLOBAL_LIST_EMPTY(bodycontainers) //Let them act as spawnpoints for revenants an
 
 /obj/structure/bodycontainer/morgue/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_warning("You overload [src]'s alert system."))
 	obj_flags |= EMAGGED
 	update_appearance(UPDATE_ICON)
+	return TRUE
 
 /obj/structure/bodycontainer/morgue/update_icon_state()
 	if(!connected || connected.loc != src) // Open or tray is gone.

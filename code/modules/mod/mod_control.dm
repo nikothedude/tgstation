@@ -404,6 +404,7 @@
 /obj/item/mod/control/emag_act(mob/user)
 	locked = !locked
 	balloon_alert(user, "suit access [locked ? "locked" : "unlocked"]")
+	return TRUE
 
 /obj/item/mod/control/emp_act(severity)
 	. = ..()

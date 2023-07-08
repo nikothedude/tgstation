@@ -130,7 +130,7 @@
 
 /obj/item/radio/intercom/emag_act(mob/user, obj/item/card/emag/emag_card)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 
 	switch(freqlock)
 		// Emagging an intercom with an emaggable lock will remove the lock
@@ -147,9 +147,9 @@
 
 		// Emagging an unlocked one will do nothing, for now
 		else
-			return
+			return FALSE
 
-	return ..()
+	return TRUE
 
 /obj/item/radio/intercom/update_icon_state()
 	icon_state = on ? initial(icon_state) : "intercom-p"

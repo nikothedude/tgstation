@@ -492,6 +492,8 @@
 		contraband = TRUE
 		obj_flags |= EMAGGED
 		to_chat(user, span_notice("You adjust [src]'s routing and receiver spectrum, unlocking special supplies and contraband."))
+		return TRUE
+	return FALSE
 
 /obj/item/circuitboard/computer/cargo/configure_machine(obj/machinery/computer/cargo/machine)
 	if(!istype(machine))
@@ -512,6 +514,8 @@
 		contraband = TRUE
 		obj_flags |= EMAGGED
 		to_chat(user, span_notice("You change the routing protocols, allowing the Drop Pod to land anywhere on the station."))
+		return TRUE
+	return FALSE
 
 /obj/item/circuitboard/computer/cargo/express/multitool_act(mob/living/user)
 	if (!(obj_flags & EMAGGED))

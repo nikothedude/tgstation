@@ -234,9 +234,9 @@
 		special_retaliate_after_attack(user)
 
 /mob/living/simple_animal/bot/secbot/emag_act(mob/user)
-	..()
+	. = ..()
 	if(!(bot_cover_flags & BOT_COVER_EMAGGED))
-		return
+		return FALSE
 	if(user)
 		to_chat(user, span_danger("You short out [src]'s target assessment circuits."))
 		oldtarget_name = user.name
@@ -249,6 +249,7 @@
 
 	security_mode_flags &= ~SECBOT_DECLARE_ARRESTS
 	update_appearance()
+	return TRUE
 
 /mob/living/simple_animal/bot/secbot/bullet_act(obj/projectile/Proj)
 	if(istype(Proj, /obj/projectile/beam) || istype(Proj, /obj/projectile/bullet))

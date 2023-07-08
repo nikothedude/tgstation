@@ -556,8 +556,9 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 
 /obj/machinery/computer/libraryconsole/bookmanagement/emag_act(mob/user)
 	if(!density)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
+	return TRUE
 
 /obj/machinery/computer/libraryconsole/bookmanagement/proc/set_screen_state(new_state)
 	screen_state = clamp(new_state, MIN_LIBRARY, MAX_LIBRARY)

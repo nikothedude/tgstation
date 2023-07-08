@@ -204,7 +204,7 @@
 
 /obj/machinery/power/apc/emag_act(mob/user)
 	if((obj_flags & EMAGGED) || malfhack)
-		return
+		return FALSE
 
 	if(opened)
 		balloon_alert(user, "close the cover first!")
@@ -219,6 +219,8 @@
 		locked = FALSE
 		balloon_alert(user, "you emag the APC")
 		update_appearance()
+		return TRUE
+	return FALSE
 
 // damage and destruction acts
 /obj/machinery/power/apc/emp_act(severity)

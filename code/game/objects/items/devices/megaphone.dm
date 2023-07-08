@@ -40,10 +40,11 @@
 
 /obj/item/megaphone/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_warning("You overload \the [src]'s voice synthesizer."))
 	obj_flags |= EMAGGED
 	voicespan = list(SPAN_REALLYBIG, "userdanger")
+	return TRUE
 
 /obj/item/megaphone/sec
 	name = "security megaphone"

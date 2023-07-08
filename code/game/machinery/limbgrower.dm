@@ -36,10 +36,11 @@
 /// Emagging a limbgrower allows you to build synthetic armblades.
 /obj/machinery/limbgrower/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	. = ..()
 	obj_flags |= EMAGGED
 	update_static_data(user)
+	return TRUE
 
 /obj/machinery/limbgrower/ui_interact(mob/user, datum/tgui/ui)
 	. = ..()

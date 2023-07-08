@@ -65,10 +65,11 @@
 	. = ..()
 	if(emagged)
 		balloon_alert(user, "access panel lock already shorted!")
-		return
+		return FALSE
 	balloon_alert(user, "access panel lock shorted")
 	to_chat(src, span_warning("[user] shorts out your access panel lock!"))
 	emagged = TRUE
+	return TRUE
 
 /mob/living/silicon/ai/wrench_act(mob/living/user, obj/item/tool)
 	. = ..()

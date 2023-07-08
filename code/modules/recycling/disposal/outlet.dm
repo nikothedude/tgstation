@@ -108,7 +108,7 @@
 //if emagged it cant change the speed setting off max
 	if(obj_flags & EMAGGED)
 		to_chat(user, span_notice("The LED display flashes an error!"))
-	else		
+	else
 		to_chat(user, span_notice("You adjust the ejection force on \the [src]."))
 		switch(eject_speed)
 			if(EJECT_SPEED_SLOW)
@@ -125,11 +125,12 @@
 /obj/structure/disposaloutlet/emag_act(mob/user, obj/item/card/emag/E)
 	. = ..()
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_notice("You silently disable the sanity checking on \the [src]'s ejection force."))
 	obj_flags |= EMAGGED
 	eject_speed = EJECT_SPEED_YEET
 	eject_range = EJECT_RANGE_YEET
+	return TRUE
 
 #undef EJECT_SPEED_SLOW
 #undef EJECT_SPEED_MED

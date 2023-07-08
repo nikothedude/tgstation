@@ -817,9 +817,10 @@
 
 /obj/item/toy/nuke/emag_act(mob/user)
 	if (obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_warning("You short-circuit \the [src]."))
 	obj_flags |= EMAGGED
+	return TRUE
 
 /*
  * Fake meteor
@@ -834,9 +835,10 @@
 
 /obj/item/toy/minimeteor/emag_act(mob/user)
 	if (obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_warning("You short-circuit whatever electronics exist inside \the [src], if there even are any."))
 	obj_flags |= EMAGGED
+	return TRUE
 
 /obj/item/toy/minimeteor/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
 	if (obj_flags & EMAGGED)
@@ -1610,9 +1612,10 @@ GLOBAL_LIST_EMPTY(intento_players)
 
 /obj/item/toy/intento/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	to_chat(user, span_notice("You short-circuit [src], activating the negative feedback loop."))
+	return TRUE
 
 /obj/item/toy/intento/Destroy()
 	STOP_PROCESSING(SSfastprocess, src)

@@ -255,10 +255,12 @@
 
 // let emags override the temperature settings
 /obj/item/clothing/suit/space/emag_act(mob/user)
+	. = FALSE
 	if(!(obj_flags & EMAGGED))
 		obj_flags |= EMAGGED
 		user.visible_message(span_warning("You emag [src], overwriting thermal regulator restrictions."))
 		user.log_message("emagged [src], overwriting thermal regulator restrictions.", LOG_GAME)
+		. = TRUE
 	playsound(src, SFX_SPARKS, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 
 // update the HUD icon

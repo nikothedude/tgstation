@@ -98,11 +98,12 @@
 
 /obj/machinery/elevator_control_panel/emag_act(mob/user, obj/item/card/emag/emag_card)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 
 	obj_flags |= EMAGGED
 
 	var/datum/lift_master/lift = lift_weakref?.resolve()
+	. = TRUE
 	if(!lift)
 		return
 

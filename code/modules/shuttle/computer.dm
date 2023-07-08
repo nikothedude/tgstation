@@ -218,10 +218,11 @@
 
 /obj/machinery/computer/shuttle/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	req_access = list()
 	obj_flags |= EMAGGED
 	to_chat(user, span_notice("You fried the consoles ID checking system."))
+	return TRUE
 
 /obj/machinery/computer/shuttle/connect_to_shuttle(mapload, obj/docking_port/mobile/port, obj/docking_port/stationary/dock)
 	if(!mapload)

@@ -59,7 +59,8 @@
 		icon_state = src.icon_broken
 		if(user)
 			visible_message(span_warning("\The [src] is broken by [user] with an electromagnetic card!"))
-			return
+		return TRUE
+	return FALSE
 
 /obj/item/storage/lockbox/examine(mob/user)
 	. = ..()

@@ -29,10 +29,11 @@
 
 /obj/machinery/computer/apc_control/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	usr.log_message("emagged [src].", LOG_ATTACK, color="red")
 	playsound(src, SFX_SPARKS, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+	return TRUE
 
 /obj/machinery/computer/apc_control/proc/log_activity(log_text)
 	if(!should_log)

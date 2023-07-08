@@ -227,9 +227,9 @@
 		step_to(src, (get_step_away(src,user)))
 
 /mob/living/simple_animal/bot/medbot/emag_act(mob/user)
-	..()
+	. = ..()
 	if(!(bot_cover_flags & BOT_COVER_EMAGGED))
-		return
+		return FALSE
 	medical_mode_flags &= ~MEDBOT_DECLARE_CRIT
 	if(user)
 		to_chat(user, span_notice("You short out [src]'s reagent synthesis circuits."))
@@ -238,6 +238,7 @@
 	playsound(src, SFX_SPARKS, 75, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	if(user)
 		oldpatient = user
+	return TRUE
 
 /mob/living/simple_animal/bot/medbot/process_scan(mob/living/carbon/human/H)
 	if(H.stat == DEAD)
