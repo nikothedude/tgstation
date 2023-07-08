@@ -8,7 +8,7 @@
 #define MALF_AI_ROLL_TIME 0.5 SECONDS
 #define MALF_AI_ROLL_COOLDOWN 1 SECONDS + MALF_AI_ROLL_TIME
 #define MALF_AI_ROLL_DAMAGE 75
-#define MALF_AI_ROLL_CRIT_CHANCE 5 //percent
+#define MALF_AI_ROLL_CRIT_CHANCE 100 //percent
 #define MALF_AI_ROLL_MAX_DISTANCE 1 //anything further away than this, and the roll will fail
 
 GLOBAL_LIST_INIT(blacklisted_malf_machines, typecacheof(list(
@@ -1036,7 +1036,7 @@ GLOBAL_LIST_INIT(malf_modules, subtypesof(/datum/ai_module))
 	name = "Targetted Safeties Override"
 	desc = "Allows you to effectively emag anything you click on."
 	button_icon_state = "emag"
-	uses = 6
+	uses = 8
 	auto_use_uses = FALSE
 	enable_text = span_notice("You load your syndicate software package to your most recent memory slot.")
 	disable_text = span_notice("You unload your syndicate software package.")
