@@ -8,7 +8,7 @@
 #define MALF_AI_ROLL_TIME 0.5 SECONDS
 #define MALF_AI_ROLL_COOLDOWN 1 SECONDS + MALF_AI_ROLL_TIME
 #define MALF_AI_ROLL_DAMAGE 75
-#define MALF_AI_ROLL_CRIT_CHANCE 100 //percent
+#define MALF_AI_ROLL_CRIT_CHANCE 10 //percent
 #define MALF_AI_ROLL_MAX_DISTANCE 1 //anything further away than this, and the roll will fail
 
 GLOBAL_LIST_INIT(blacklisted_malf_machines, typecacheof(list(
