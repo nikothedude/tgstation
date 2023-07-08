@@ -401,10 +401,10 @@ GLOBAL_LIST_INIT(typecache_holodeck_linked_floorcheck_ok, typecacheof(list(/turf
 
 /obj/machinery/computer/holodeck/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	if(!LAZYLEN(emag_programs))
 		to_chat(user, "[src] does not seem to have a card swipe port. It must be an inferior model.")
-		return
+		return FALSE
 	playsound(src, SFX_SPARKS, 75, TRUE)
 	obj_flags |= EMAGGED
 	to_chat(user, span_warning("You vastly increase projector power and override the safety and security protocols."))
@@ -412,6 +412,7 @@ GLOBAL_LIST_INIT(typecache_holodeck_linked_floorcheck_ok, typecacheof(list(/turf
 	user.log_message("emagged the Holodeck Control Console.", LOG_GAME)
 	message_admins("[ADMIN_LOOKUPFLW(user)] emagged the Holodeck Control Console.")
 	nerf(!(obj_flags & EMAGGED),FALSE)
+	return TRUE
 
 /obj/machinery/computer/holodeck/emp_act(severity)
 	. = ..()

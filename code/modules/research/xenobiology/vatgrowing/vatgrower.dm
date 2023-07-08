@@ -126,11 +126,12 @@
 
 /obj/machinery/plumbing/growing_vat/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	playsound(src, SFX_SPARKS, 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	to_chat(user, span_warning("You overload [src]'s resampling circuit."))
 	flick("growing_vat_emagged", src)
+	return TRUE
 
 /obj/machinery/plumbing/growing_vat/proc/on_sample_growth_completed()
 	SIGNAL_HANDLER

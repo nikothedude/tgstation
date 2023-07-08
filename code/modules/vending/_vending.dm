@@ -1028,9 +1028,10 @@
 
 /obj/machinery/vending/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	to_chat(user, span_notice("You short out the product lock on [src]."))
+	return TRUE
 
 /obj/machinery/vending/interact(mob/user)
 	if(seconds_electrified && !(machine_stat & NOPOWER))

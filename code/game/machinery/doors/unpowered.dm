@@ -14,7 +14,7 @@
 		return ..()
 
 /obj/machinery/door/unpowered/emag_act()
-	return
+	return FALSE
 
 /obj/machinery/door/unpowered/shuttle
 	icon = 'icons/turf/shuttle.dmi'

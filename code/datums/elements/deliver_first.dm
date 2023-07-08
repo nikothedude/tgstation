@@ -67,6 +67,7 @@
 	SIGNAL_HANDLER
 	emagger.balloon_alert(emagger, "delivery lock bypassed")
 	remove_lock(target)
+	return TRUE
 
 ///signal called before opening target, blocks opening
 /datum/element/deliver_first/proc/on_pre_open(obj/structure/closet/target, mob/living/user, force)

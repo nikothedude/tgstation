@@ -146,7 +146,8 @@ Nothing else in the console has ID requirements.
 		playsound(src, SFX_SPARKS, 75, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 		obj_flags |= EMAGGED
 		locked = FALSE
-	return ..()
+		return TRUE
+	return FALSE
 
 /obj/machinery/computer/rdconsole/ui_interact(mob/user, datum/tgui/ui = null)
 	. = ..()

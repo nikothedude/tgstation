@@ -92,3 +92,5 @@
 		parent_turret.obj_flags |= EMAGGED
 		parent_turret.on = FALSE
 		addtimer(VARSET_CALLBACK(parent_turret, on, TRUE), 4 SECONDS)
+		return TRUE
+	return FALSE

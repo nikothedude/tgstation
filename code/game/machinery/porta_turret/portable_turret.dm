@@ -357,7 +357,7 @@ DEFINE_BITFIELD(turret_flags, list(
 
 /obj/machinery/porta_turret/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_warning("You short out [src]'s threat assessment circuits."))
 	audible_message(span_hear("[src] hums oddly..."))
 	obj_flags |= EMAGGED
@@ -367,6 +367,7 @@ DEFINE_BITFIELD(turret_flags, list(
 	//6 seconds for the traitor to gtfo of the area before the turret decides to ruin his shit
 	addtimer(CALLBACK(src, PROC_REF(toggle_on), TRUE), 6 SECONDS)
 	//turns it back on. The cover popUp() popDown() are automatically called in process(), no need to define it here
+	return TRUE
 
 /obj/machinery/porta_turret/emp_act(severity)
 	. = ..()
@@ -968,10 +969,11 @@ DEFINE_BITFIELD(turret_flags, list(
 
 /obj/machinery/turretid/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_notice("You short out the turret controls' access analysis module."))
 	obj_flags |= EMAGGED
 	locked = FALSE
+	return TRUE
 
 /obj/machinery/turretid/attack_ai(mob/user)
 	if(!ailock || isAdminGhostAI(user))

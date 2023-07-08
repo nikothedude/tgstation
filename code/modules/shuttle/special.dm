@@ -69,7 +69,7 @@
 	return FALSE
 
 /obj/machinery/power/emitter/energycannon/magical/emag_act(mob/user)
-	return
+	return FALSE
 
 /obj/structure/table/abductor/wabbajack
 	name = "wabbajack altar"
@@ -290,7 +290,7 @@
 	return
 
 /obj/machinery/scanner_gate/luxury_shuttle/emag_act(mob/user)
-	return
+	return FALSE
 
 #define LUXURY_MESSAGE_COOLDOWN 100
 /obj/machinery/scanner_gate/luxury_shuttle/Bumped(atom/movable/AM)

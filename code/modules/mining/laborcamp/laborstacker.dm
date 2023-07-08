@@ -133,6 +133,8 @@ GLOBAL_LIST(labor_sheet_values)
 	if(!(obj_flags & EMAGGED))
 		obj_flags |= EMAGGED
 		to_chat(user, span_warning("PZZTTPFFFT"))
+		return TRUE
+	return FALSE
 
 /**********************Prisoner Collection Unit**************************/
 

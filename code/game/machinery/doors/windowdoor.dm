@@ -331,9 +331,13 @@
 		operating = TRUE
 		flick("[base_state]spark", src)
 		playsound(src, SFX_SPARKS, 75, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
-		sleep(0.6 SECONDS)
-		operating = FALSE
-		open(BYPASS_DOOR_CHECKS)
+		addtimer(CALLBACK(src, PROC_REF(finish_emag_act)), 0.6 SECONDS)
+		return TRUE
+	return FALSE
+
+/obj/machinery/door/window/proc/finish_emag_act()
+	operating = FALSE
+	open(BYPASS_DOOR_CHECKS)
 
 /obj/machinery/door/window/examine(mob/user)
 	. = ..()

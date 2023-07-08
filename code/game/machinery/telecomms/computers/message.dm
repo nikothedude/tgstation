@@ -40,7 +40,7 @@
 
 /obj/machinery/computer/message_monitor/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	if(!isnull(linkedServer))
 		obj_flags |= EMAGGED
 		screen = MSG_MON_SCREEN_HACKED
@@ -55,6 +55,7 @@
 		linkedServer.toggled = FALSE
 	else
 		to_chat(user, span_notice("A no server error appears on the screen."))
+	return TRUE
 
 /// Remove the emag effect from the console
 /obj/machinery/computer/message_monitor/proc/unemag_console()

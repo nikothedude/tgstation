@@ -491,13 +491,14 @@ GLOBAL_LIST_INIT(orion_events, generate_orion_events())
 
 /obj/machinery/computer/arcade/orion_trail/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_notice("You override the cheat code menu and skip to Cheat #[rand(1, 50)]: Realism Mode."))
 	user.log_message("emagged [src], activating Realism Mode.", LOG_GAME)
 	name = "The Orion Trail: Realism Edition"
 	desc = "Learn how our ancestors got to Orion, and try not to die in the process!"
 	newgame()
 	obj_flags |= EMAGGED
+	return TRUE
 
 /mob/living/basic/syndicate/ranged/smg/orion
 	name = "spaceport security"

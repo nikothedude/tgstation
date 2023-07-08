@@ -631,6 +631,7 @@
 	payments_acc = null
 	req_access = list()
 	to_chat(user, span_warning("[src]'s card reader fizzles and smokes, and the account owner is reset."))
+	return TRUE
 
 /obj/structure/displaycase/forsale/examine(mob/user)
 	. = ..()

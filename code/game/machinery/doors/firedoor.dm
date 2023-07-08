@@ -438,12 +438,13 @@
 
 /obj/machinery/door/firedoor/emag_act(mob/user, obj/item/card/emag/emag_type)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	if(istype(emag_type, /obj/item/card/emag/doorjack)) //Skip doorjack-specific code
 		var/obj/item/card/emag/doorjack/digital_crowbar = emag_type
 		digital_crowbar.use_charge(user)
 	obj_flags |= EMAGGED
 	INVOKE_ASYNC(src, PROC_REF(open))
+	return TRUE
 
 /obj/machinery/door/firedoor/Bumped(atom/movable/AM)
 	if(panel_open || operating)

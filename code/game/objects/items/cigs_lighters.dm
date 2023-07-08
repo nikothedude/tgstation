@@ -1086,10 +1086,13 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			var/datum/effect_system/spark_spread/sp = new /datum/effect_system/spark_spread //for effect
 			sp.set_up(5, 1, src)
 			sp.start()
+			return TRUE
 		else
 			to_chat(user, span_warning("[src] is already emagged!"))
+			return FALSE
 	else
 		to_chat(user, span_warning("You need to open the cap to do that!"))
+		return FALSE
 
 /obj/item/clothing/mask/vape/attack_self(mob/user)
 	if(reagents.total_volume > 0)

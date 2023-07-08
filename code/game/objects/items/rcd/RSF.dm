@@ -189,6 +189,7 @@ RSF
 		to_chat(user, span_warning("You short out [src]'s reagent safety checker!"))
 	else
 		to_chat(user, span_warning("You reset [src]'s reagent safety checker!"))
+	return TRUE
 
 /obj/item/rsf/cookiesynth/attack_self(mob/user)
 	var/mob/living/silicon/robot/P = null

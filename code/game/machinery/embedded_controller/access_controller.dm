@@ -27,12 +27,13 @@
 
 /obj/machinery/door_buttons/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	req_access = list()
 	req_one_access = list()
 	playsound(src, SFX_SPARKS, 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	to_chat(user, span_warning("You short out the access controller."))
+	return TRUE
 
 /obj/machinery/door_buttons/proc/removeMe()
 

@@ -27,9 +27,10 @@
 
 /obj/machinery/door/window/tram/emag_act(mob/living/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	balloon_alert(user, "disabled motion sensors")
 	obj_flags |= EMAGGED
+	return TRUE
 
 /// Random event called by code\modules\events\tram_malfunction.dm
 /// Makes the doors malfunction

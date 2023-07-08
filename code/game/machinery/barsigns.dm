@@ -172,12 +172,14 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/barsign, 32)
 /obj/machinery/barsign/emag_act(mob/user)
 	if(machine_stat & (NOPOWER|BROKEN|EMPED))
 		balloon_alert(user, "controls are unresponsive!")
-		return
+		return FALSE
 
 	balloon_alert(user, "illegal barsign loaded")
-	sleep(10 SECONDS)
-	set_sign(new /datum/barsign/hiddensigns/syndibarsign)
+	addtimer(CALLBACK(src, PROC_REF(finish_emag_effect)), 10 SECONDS)
+	return TRUE
 
+/obj/machinery/barsign/proc/finish_emag_effect()
+	set_sign(new /datum/barsign/hiddensigns/syndibarsign)
 
 /obj/machinery/barsign/proc/pick_sign(mob/user)
 	var/picked_name = tgui_input_list(user, "Available Signage", "Bar Sign", sort_list(get_bar_names()))

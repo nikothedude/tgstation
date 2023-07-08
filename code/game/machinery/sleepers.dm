@@ -268,7 +268,7 @@
 
 /obj/machinery/sleeper/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 
 	to_chat(user, span_warning("You scramble the sleeper's user interface!"))
 	obj_flags |= EMAGGED
@@ -276,6 +276,7 @@
 	var/list/av_chem = available_chems.Copy()
 	for(var/chem in av_chem)
 		chem_buttons[chem] = pick_n_take(av_chem) //no dupes, allow for random buttons to still be correct
+	return TRUE
 
 /obj/machinery/sleeper/proc/inject_chem(chem, mob/user)
 	if((chem in available_chems) && chem_allowed(chem))

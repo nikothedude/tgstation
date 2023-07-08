@@ -622,7 +622,7 @@ GLOBAL_LIST_INIT(arcade_prize_pool, list(
 
 /obj/machinery/computer/arcade/battle/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 
 	to_chat(user, span_warning("A mesmerizing Rhumba beat starts playing from the arcade machine's speakers!"))
 	temp = "<br><center><h2>If you die in the game, you die for real!<center><h2>"
@@ -644,6 +644,7 @@ GLOBAL_LIST_INIT(arcade_prize_pool, list(
 	name = "Outbomb Cuban Pete"
 
 	updateUsrDialog()
+	return TRUE
 
 // ** AMPUTATION ** //
 

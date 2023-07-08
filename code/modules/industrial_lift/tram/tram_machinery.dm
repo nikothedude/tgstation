@@ -393,11 +393,12 @@ GLOBAL_LIST_EMPTY(tram_doors)
 
 /obj/machinery/crossing_signal/emag_act(mob/living/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	balloon_alert(user, "disabled motion sensors")
 	if(signal_state != XING_STATE_MALF)
 		set_signal_state(XING_STATE_MALF)
 	obj_flags |= EMAGGED
+	return TRUE
 
 /obj/machinery/crossing_signal/proc/start_malfunction()
 	if(signal_state != XING_STATE_MALF)

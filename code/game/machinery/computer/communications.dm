@@ -67,7 +67,7 @@
 	syndicate = TRUE
 
 /obj/machinery/computer/communications/syndicate/emag_act(mob/user, obj/item/card/emag/emag_card)
-	return
+	return FALSE
 
 /obj/machinery/computer/communications/syndicate/can_buy_shuttles(mob/user)
 	return FALSE
@@ -121,24 +121,25 @@
 	if(istype(emag_card, /obj/item/card/emag/battlecruiser))
 		if(!IS_TRAITOR(user))
 			to_chat(user, span_danger("You get the feeling this is a bad idea."))
-			return
+			return FALSE
 		var/obj/item/card/emag/battlecruiser/caller_card = emag_card
 		if(battlecruiser_called)
 			to_chat(user, span_danger("The card reports a long-range message already sent to the Syndicate fleet...?"))
-			return
+			return FALSE
 		battlecruiser_called = TRUE
 		caller_card.use_charge(user)
 		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(summon_battlecruiser), caller_card.team), rand(20 SECONDS, 1 MINUTES))
 		playsound(src, 'sound/machines/terminal_alert.ogg', 50, FALSE)
-		return
+		return TRUE
 
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	if (authenticated)
 		authorize_access = SSid_access.get_region_access_list(list(REGION_ALL_STATION))
 	to_chat(user, span_danger("You scramble the communication routing circuits!"))
 	playsound(src, 'sound/machines/terminal_alert.ogg', 50, FALSE)
+	return TRUE
 
 /obj/machinery/computer/communications/ui_act(action, list/params)
 	var/static/list/approved_states = list(STATE_BUYING_SHUTTLE, STATE_CHANGING_STATUS, STATE_MAIN, STATE_MESSAGES)

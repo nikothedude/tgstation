@@ -60,7 +60,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/ticket_machine, 32)
 
 /obj/machinery/ticket_machine/emag_act(mob/user) //Emag the ticket machine to dispense burning tickets, as well as randomize its number to destroy the HoP's mind.
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	to_chat(user, span_warning("You overload [src]'s bureaucratic logic circuitry to its MAXIMUM setting."))
 	ticket_number = rand(0,max_number)
 	current_number = ticket_number
@@ -71,6 +71,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/ticket_machine, 32)
 			qdel(ticket)
 		tickets.Cut()
 	update_appearance()
+	return TRUE
 
 /obj/item/wallframe/ticket_machine
 	name = "ticket machine frame"

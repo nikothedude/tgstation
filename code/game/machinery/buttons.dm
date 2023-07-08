@@ -142,7 +142,7 @@
 /obj/machinery/button/emag_act(mob/user)
 	. = ..()
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	req_access = list()
 	req_one_access = list()
 	playsound(src, SFX_SPARKS, 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
@@ -150,9 +150,10 @@
 
 	// The device inside can be emagged by swiping the button
 	// returning TRUE will prevent feedback (so we can do our own)
-	if(device?.emag_act(user))
-		return
+	if(!device?.emag_act(user))
+		return FALSE
 	balloon_alert(user, "access overridden")
+	return TRUE
 
 /obj/machinery/button/attack_ai(mob/user)
 	if(!silicon_access_disabled && !panel_open)

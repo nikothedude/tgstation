@@ -214,7 +214,7 @@
 		virus_data["cure"] = virus.cure_text
 		viruses += list(virus_data)
 	.["statusviruses"] = viruses
-	
+
 	return .
 
 /obj/item/mod/module/status_readout/on_suit_activation()
@@ -509,6 +509,7 @@
 	SIGNAL_HANDLER
 
 	dna = null
+	return TRUE
 
 /obj/item/mod/module/dna_lock/proc/on_mod_activation(datum/source, mob/user)
 	SIGNAL_HANDLER

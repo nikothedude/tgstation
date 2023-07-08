@@ -89,10 +89,11 @@
 
 /obj/machinery/destructive_scanner/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	playsound(src, SFX_SPARKS, 75, TRUE, SILENCED_SOUND_EXTRARANGE)
 	to_chat(user, span_notice("You disable the safety sensor BIOS on [src]."))
+	return TRUE
 
 /obj/machinery/destructive_scanner/update_icon_state()
 	. = ..()

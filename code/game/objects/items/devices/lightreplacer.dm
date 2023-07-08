@@ -156,10 +156,11 @@
 
 /obj/item/lightreplacer/emag_act()
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	obj_flags |= EMAGGED
 	playsound(loc, SFX_SPARKS, 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 	update_appearance()
+	return TRUE
 
 /obj/item/lightreplacer/update_name(updates)
 	. = ..()
@@ -332,7 +333,7 @@
 	bluespace_toggle = TRUE
 
 /obj/item/lightreplacer/blue/emag_act()
-	return  // balancing against longrange explosions
+	return FALSE // balancing against longrange explosions
 
 #undef GLASS_SHEET_USES
 #undef LIGHTBULB_COST

@@ -377,11 +377,12 @@
 
 /obj/machinery/power/emitter/emag_act(mob/user)
 	if(obj_flags & EMAGGED)
-		return
+		return FALSE
 	locked = FALSE
 	obj_flags |= EMAGGED
 	if(user)
 		user.visible_message(span_warning("[user.name] emags [src]."), span_notice("You short out the lock."))
+	return TRUE
 
 
 /obj/machinery/power/emitter/prototype

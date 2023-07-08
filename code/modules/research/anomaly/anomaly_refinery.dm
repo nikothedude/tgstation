@@ -127,7 +127,7 @@
 	. = ..()
 	if (obj_flags & EMAGGED)
 		balloon_alert(user, "already hacked!")
-		return
+		return FALSE
 
 	obj_flags |= EMAGGED
 	playsound(src, 'sound/machines/buzz-sigh.ogg', 50, vary = FALSE)
