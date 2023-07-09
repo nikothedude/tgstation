@@ -1170,9 +1170,9 @@
 		return ai_voicechanger.say_name
 	return
 
-/mob/living/silicon/ai/run_examinate(atom/examinify, mob/perspective)
+/mob/living/silicon/ai/run_examinate(atom/examinify)
 
-	if (!can_see(perspective))
+	if (!can_see(examinify))
 		return FALSE
 
 	return ..()

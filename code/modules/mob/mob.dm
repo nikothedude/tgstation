@@ -548,11 +548,11 @@
 	set name = "Examine"
 	set category = "IC"
 
-	DEFAULT_QUEUE_OR_CALL_VERB(VERB_CALLBACK(src, PROC_REF(run_examinate), examinify, (ismob(client?.eye) ? client.eye : src)))
+	DEFAULT_QUEUE_OR_CALL_VERB(VERB_CALLBACK(src, PROC_REF(run_examinate), examinify))
 
-/mob/proc/run_examinate(atom/examinify, mob/perspective)
+/mob/proc/run_examinate(atom/examinify)
 
-	if(isturf(examinify) && !(sight & SEE_TURFS) && !(examinify in view((client ? client.view : world.view), perspective)))
+	if(isturf(examinify) && !(sight & SEE_TURFS) && !(examinify in view((client ? client.view : world.view), (ismob(client?.eye) ? client.eye : src))))
 		// shift-click catcher may issue examinate() calls for out-of-sight turfs
 		return
 
