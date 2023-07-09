@@ -76,14 +76,17 @@
 	if(inserted_pai)
 		. += mutable_appearance(initial(icon), "pai_inserted")
 
-/obj/item/modular_computer/pda/attack_ai(mob/user)
-	to_chat(user, span_notice("It doesn't feel right to snoop around like that..."))
-	return // we don't want ais or cyborgs using a private role tablet
+/obj/item/modular_computer/pda/attack_ai(mob/living/silicon/user)
+	if (user.emagged || user.mind?.has_antag_datum(/datum/antagonist/malf_ai))
+		return attack_self(user)
+	else
+		balloon_alert(user, "password denied")
+		return FALSE // we don't want ais or cyborgs using a private role tablet, but hacked silicons are ok
 
 /obj/item/modular_computer/pda/interact(mob/user)
 	. = ..()
 	if(HAS_TRAIT(src, TRAIT_PDA_MESSAGE_MENU_RIGGED))
-		explode(usr, from_message_menu = TRUE)
+		explode(user, from_message_menu = TRUE)
 
 /obj/item/modular_computer/pda/attack_self(mob/user)
 	// bypass literacy checks to access syndicate uplink
