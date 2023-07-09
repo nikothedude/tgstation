@@ -120,6 +120,7 @@
 
 /mob/living/silicon/ai/ShiftClickOn(atom/target)
 	target.AIShiftClick(src)
+	return ..()
 
 /mob/living/silicon/ai/CtrlClickOn(atom/target)
 	target.AICtrlClick(src)

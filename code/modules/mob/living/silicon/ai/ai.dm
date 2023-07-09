@@ -1170,4 +1170,11 @@
 		return ai_voicechanger.say_name
 	return
 
+/mob/living/silicon/ai/run_examinate(atom/examinify, mob/perspective)
+
+	if (!can_see(perspective))
+		return FALSE
+
+	return ..()
+
 #undef CALL_BOT_COOLDOWN
