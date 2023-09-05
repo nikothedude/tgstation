@@ -187,6 +187,89 @@
 		if(wounds.try_handling(user))
 			return TRUE
 
+	if (user?.try_grab_diagnostics(src, modifiers))
+		return TRUE
+
+	return FALSE
+
+/mob/living/carbon/proc/try_grab_diagnostics(mob/living/grabbed, list/modifiers, silent = FALSE)
+
+	if (!grabbed || pulling != grabbed)
+		return FALSE
+
+	if (grab_state != GRAB_PASSIVE)
+		if (!silent)
+			to_chat(src, span_warning("You must have [grabbed] in a passive grab to inspect their body!"))
+		return FALSE
+
+	if (combat_mode)
+		if (!silent)
+			to_chat(src, span_warning("You must have combat mode disabled to inspect [grabbed]'s body!"))
+		return FALSE
+
+	if (!(modifiers[RIGHT_CLICK]))
+		return FALSE
+
+	if (!iscarbon(grabbed))
+		return
+
+	var/mob/living/carbon/carbon_patient = grabbed
+
+	var/body_part = parse_zone(user.zone_selected)
+	if (!body_part)
+		return FALSE
+
+	var/part_visible = get_location_accessible(carbon_patient, user.zone_selected)
+
+	if (!part_visible)
+		if (!silent)
+			to_chat(src, span_warning("You must expose [grabbed]'s [body_part] to inspect it!"))
+		return FALSE
+
+	var/obj/item/organ/internal/heart/heart = carbon_patient.get_organ_slot(ORGAN_SLOT_HEART)
+	var/obj/item/organ/internal/lungs/lungs = carbon_patient.get_organ_slot(ORGAN_SLOT_LUNGS)
+	var/obj/item/organ/internal/liver/liver = carbon_patient.get_organ_slot(ORGAN_SLOT_LIVER)
+	var/obj/item/organ/internal/appendix/appendix = carbon_patient.get_organ_slot(ORGAN_SLOT_APPENDIX)
+
+	var/obj/item/bodypart/targetted_part = carbon_patient.get_bodypart(body_part)
+	if (!targetted_part)
+		return FALSE
+
+	var/breathing_synthetic = (lungs?.organ_flags & ORGAN_ROBOTIC)
+	var/breathing_audible = (lungs && !lungs.organ_flags & ORGAN_FAILING && carbon_patient.stat != DEAD && (!HAS_TRAIT(carbon_patient, TRAIT_FAKEDEATH)) && (!HAS_TRAIT(carbon_patient, TRAIT_NOBREATH)))//If pt is dead or otherwise not breathing
+	var/trying_to_breathe = (carbon_patient.stat != DEAD && (!HAS_TRAIT(carbon_patient, TRAIT_FAKEDEATH)) && (!HAS_TRAIT(carbon_patient, TRAIT_NOBREATH)))
+	var/struggling_to_breathe = (carbon_patient.failed_last_breath || lungs?.damage > lungs.low_threshold)
+	var/really_struggling_to_breathe = (lungs?.damage > lungs.high_threshold)
+	var/breathing_accelerated = (carbon_patient.losebreath)
+
+	var/diaphram_moving = (!trying_to_breathe || breathing_synthetic)
+
+	var/jaundice_visible = (targetted_part.biological_state & BIO_FLESH && bodypartcarbon_patient.undergoing_liver_failure())
+
+	var/msg = ""
+	switch (body_part)
+		if (BODY_ZONE_CHEST)
+
+			if (can_hear())
+				if (!breathing_audible)
+					msg += span_danger("You can't hear [grabbed]'s breathing... ")
+				else
+					if (breathing_synthetic)
+						msg += span_notice("You can hear some kind of constant whirring in [grabbed]'s chest... ")
+
+
+
+
+			if (!diaphram_moving)
+				msg += span_danger("[grabbed]'s diaphram isn't moving... ")
+			else if (struggling_to_breathe)
+				var/concatenation = "[grabbed]'s diaphram heaves quickly, like they're struggling to breathe... "
+				if (really_struggling_to_breathe)
+					concatenation = "[grabbed]'s diaphram heaves rapidly and arythmatically, as if it's desperate for air... "
+				msg += span_warning("[concatenation]")
+
+	to_chat(src, msg)
+
 	return FALSE
 
 
