@@ -15,12 +15,9 @@
 	plane = GAME_PLANE_UPPER
 	var/view_range = 2.5
 	var/cooldown = 0
-	/// The projectile that the turret fires
-	var/projectile_type = /obj/projectile/bullet/manned_turret
-	/// Delay between shots in a burst
-	var/rate_of_fire = 1
-	/// Number of shots fired from one click
-	var/number_of_shots = 40
+
+	var/obj/item/gun/mounted_gun
+	var/gun_built_in = TRUE
 	/// How long it takes for the gun to allow firing after a burst
 	var/cooldown_duration = 9 SECONDS
 	var/atom/target
@@ -29,8 +26,6 @@
 	var/list/calculated_projectile_vars
 	/// Sound to play at the end of a burst
 	var/overheatsound = 'sound/weapons/sear.ogg'
-	/// Sound to play when firing
-	var/firesound = 'sound/weapons/gun/smg/shot.ogg'
 	/// If using a wrench on the turret will start undeploying it
 	var/can_be_undeployed = FALSE
 	/// What gets spawned if the object is undeployed
@@ -40,15 +35,97 @@
 	/// If TRUE, the turret will not become unanchored when not mounted
 	var/always_anchored = FALSE
 
+	var/fire_rate_mult = 1
+	var/damage_mult = 1
+	var/recoil_mult = 1
+
+	var/list/obj/item/gun/accepted_types = list(
+		/obj/item/gun/ballistic/automatic,
+		/obj/item/gun/ballistic/shotgun,
+		/obj/item/gun/ballistic/revolver,
+		/obj/item/gun/ballistic/shotgun,
+		/obj/item/gun/ballistic/rocketlauncher
+	)
+
 /obj/machinery/deployable_turret/Initialize(mapload)
 	. = ..()
 	if(always_anchored)
 		set_anchored(TRUE)
+	if (ispath(mounted_gun))
+		var/obj/item/gun/new_gun = new mounted_gun(src)
+		mounted_gun = null
+		set_mounted_gun(new_gun)
 
 /obj/machinery/deployable_turret/Destroy()
+	if (gun_removable())
+		remove_gun()
+	else
+		QDEL_NULL(mounted_gun)
+
 	target = null
 	target_turf = null
 	return ..()
+
+/obj/machinery/deployable_turret/examine(mob/user)
+	. = ..()
+
+	if (!isnull(mounted_gun))
+		. += span_notice("It seems to have <b>[mounted_gun]</b> mounted onto it.")
+
+/obj/machinery/deployable_turret/proc/gun_removable(mob/living/user)
+	if (isnull(mounted_gun))
+		return FALSE
+	if (gun_built_in)
+		return FALSE
+	return TRUE
+
+/obj/machinery/deployable_turret/proc/remove_gun(mob/living/user)
+	if (!gun_removable(user))
+		balloon_alert(user, "cant remove the gun!")
+		return FALSE
+	balloon_alert(user, "[mounted_gun] removed")
+	if (iscarbon(user))
+		var/mob/living/carbon/carbon_user = user
+		INVOKE_ASYNC(carbon_user, TYPE_PROC_REF(/mob/living/carbon, put_in_hands), mounted_gun)
+	else
+		mounted_gun.forceMove(loc)
+
+	set_mounted_gun(null)
+
+/obj/machinery/deployable_turret/proc/set_mounted_gun(obj/item/gun/new_gun)
+	if (mounted_gun == new_gun)
+		return FALSE
+
+	unmodify_mounted_gun()
+	mounted_gun = new_gun
+	modify_mounted_gun()
+	return TRUE
+
+/obj/machinery/deployable_turret/proc/modify_mounted_gun()
+	if (isnull(mounted_gun))
+		return FALSE
+
+	RegisterSignal(mounted_gun, COMSIG_ITEM_DROPPED, PROC_REF(mounted_gun_dropped))
+
+	mounted_gun.projectile_damage_multiplier *= damage_mult
+	mounted_gun.fire_delay /= fire_rate_mult
+	mounted_gun.recoil *= recoil_mult
+	mounted_gun.spread *= recoil_mult
+
+	return TRUE
+
+/obj/machinery/deployable_turret/proc/unmodify_mounted_gun()
+	if (isnull(mounted_gun))
+		return FALSE
+
+	UnregisterSignal(mounted_gun, list(COMSIG_ITEM_DROPPED))
+
+	mounted_gun.projectile_damage_multiplier /= damage_mult
+	mounted_gun.fire_delay *= fire_rate_mult
+	mounted_gun.recoil /= recoil_mult
+	mounted_gun.spread /= recoil_mult
+
+	return TRUE
 
 /// Undeploying, for when you want to move your big dakka around
 /obj/machinery/deployable_turret/wrench_act(mob/living/user, obj/item/wrench/used_wrench)
@@ -66,13 +143,43 @@
 	undeployed_object.modify_max_integrity(max_integrity)
 	qdel(src)
 
+/obj/machinery/deployable_turret/attacked_by(obj/item/attacking_item, mob/living/user)
+	if (!user.combat_mode && istype(attacking_item, /obj/item/gun))
+		return (try_attach_gun(attacking_item, user))
+
+	return ..()
+
+/obj/machinery/deployable_turret/proc/try_attach_gun(obj/item/gun/new_gun, mob/living/user)
+	if (!can_attach_gun(new_gun, user))
+		return FALSE
+
+	set_mounted_gun(new_gun)
+	return TRUE
+
+/obj/machinery/deployable_turret/proc/can_attach_gun(obj/item/gun/new_gun, mob/living/user, silent = FALSE)
+	if (!isnull(mounted_gun))
+		if (!silent)
+			balloon_alert(user, "[mounted_gun] already attached!")
+		return FALSE
+	var/is_proper_type = FALSE
+	for (var/obj/item/gun/typepath as anything in accepted_types)
+		if (istype(new_gun, typepath))
+			is_proper_type = TRUE
+			break
+	if (!is_proper_type)
+		if (!silent)
+			balloon_alert(user, "cant attach that!")
+		return FALSE
+	return TRUE
+
 //BUCKLE HOOKS
 
 /obj/machinery/deployable_turret/unbuckle_mob(mob/living/buckled_mob, force = FALSE, can_fall = TRUE)
 	playsound(src,'sound/mecha/mechmove01.ogg', 50, TRUE)
-	for(var/obj/item/I in buckled_mob.held_items)
-		if(istype(I, /obj/item/gun_control))
-			qdel(I)
+
+	UnregisterSignal(buckled_mob, COMSIG_MOB_CLICKON)
+
+	retract_gun(buckled_mob)
 	if(istype(buckled_mob))
 		buckled_mob.pixel_x = buckled_mob.base_pixel_x
 		buckled_mob.pixel_y = buckled_mob.base_pixel_y
@@ -83,31 +190,45 @@
 	. = ..()
 	STOP_PROCESSING(SSfastprocess, src)
 
-/obj/machinery/deployable_turret/user_buckle_mob(mob/living/M, mob/user, check_loc = TRUE)
+/obj/machinery/deployable_turret/user_buckle_mob(mob/living/buckled_mob, mob/user, check_loc = TRUE)
 	if(user.incapacitated() || !istype(user))
 		return
-	M.forceMove(get_turf(src))
+	buckled_mob.forceMove(get_turf(src))
 	. = ..()
 	if(!.)
 		return
-	for(var/V in M.held_items)
-		var/obj/item/I = V
-		if(istype(I))
-			if(M.dropItemToGround(I))
-				var/obj/item/gun_control/TC = new(src)
-				M.put_in_hands(TC)
-		else //Entries in the list should only ever be items or null, so if it's not an item, we can assume it's an empty hand
-			var/obj/item/gun_control/TC = new(src)
-			M.put_in_hands(TC)
-	M.pixel_y = 14
+
+	give_gun(buckled_mob)
+	RegisterSignal(buckled_mob, COMSIG_MOB_CLICKON, PROC_REF(buckled_mob_clicked))
+
+	buckled_mob.pixel_y = 14
 	layer = ABOVE_MOB_LAYER
 	SET_PLANE_IMPLICIT(src, GAME_PLANE_UPPER)
 	setDir(SOUTH)
 	playsound(src,'sound/mecha/mechmove01.ogg', 50, TRUE)
 	set_anchored(TRUE)
-	if(M.client)
-		M.client.view_size.setTo(view_range)
+	if(buckled_mob.client)
+		buckled_mob.client.view_size.setTo(view_range)
 	START_PROCESSING(SSfastprocess, src)
+
+/obj/machinery/deployable_turret/proc/retract_gun(mob/living/buckled_mob)
+	if (mounted_gun.loc == src)
+		return FALSE
+
+	balloon_alert(buckled_mob, "[mounted_gun] retracted")
+	mounted_gun.forceMove(src)
+	return TRUE
+
+/obj/machinery/deployable_turret/proc/give_gun(mob/living/buckled_mob)
+	if (mounted_gun.loc != src)
+		return FALSE
+
+	buckled_mob.drop_all_held_items()
+	if (iscarbon(buckled_mob)) // basic mob integration soon
+		var/mob/living/carbon/buckled_carbon = buckled_mob
+		INVOKE_ASYNC(buckled_carbon, TYPE_PROC_REF(/mob/living/carbon, put_in_hands), mounted_gun)
+	balloon_alert(buckled_mob, "grabbed [mounted_gun]")
+	return TRUE
 
 /obj/machinery/deployable_turret/process()
 	if (!update_positioning())
@@ -176,64 +297,52 @@
 			user.pixel_x = 8
 			user.pixel_y = -4
 
-/obj/machinery/deployable_turret/proc/checkfire(atom/targeted_atom, mob/user)
+/obj/machinery/deployable_turret/proc/try_firing(atom/targeted_atom, mob/user, flag, params)
 	target = targeted_atom
 	if(target == user || user.incapacitated() || target == get_turf(src))
-		return
-	if(world.time < cooldown)
-		if(!warned && world.time > (cooldown - cooldown_duration + rate_of_fire*number_of_shots)) // To capture the window where one is done firing
-			warned = TRUE
-			playsound(src, overheatsound, 100, TRUE)
-		return
+		return FALSE
+	if (isnull(mounted_gun))
+		return FALSE
+
+	update_positioning()
+	return (mounted_gun.fire_gun(targeted_atom, user, flag, params))
+
+/obj/machinery/deployable_turret/proc/mounted_gun_dropped(datum/signal_source, mob/user)
+	SIGNAL_HANDLER
+
+	if (user in buckled_mobs)
+		unbuckle_mob(user)
 	else
-		cooldown = world.time + cooldown_duration
-		warned = FALSE
-		volley(user)
+		retract_gun(user)
 
-/obj/machinery/deployable_turret/proc/volley(mob/user)
-	target_turf = get_turf(target)
-	for(var/i in 1 to number_of_shots)
-		addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/machinery/deployable_turret/, fire_helper), user), i*rate_of_fire)
+/obj/machinery/deployable_turret/proc/buckled_mob_clicked(mob/signal_source, atom/target, params)
+	SIGNAL_HANDLER
 
-/obj/machinery/deployable_turret/proc/fire_helper(mob/user)
-	if(user.incapacitated() || !(user in buckled_mobs))
+	if (target == mounted_gun || target == src || target == signal_source)
 		return
-	update_positioning() //REFRESH MOUSE TRACKING!!
-	var/turf/targets_from = get_turf(src)
-	if(QDELETED(target))
-		target = target_turf
-	var/obj/projectile/projectile_to_fire = new projectile_type(targets_from)
-	playsound(src, firesound, 75, TRUE)
-	projectile_to_fire.preparePixelProjectile(target, targets_from)
-	projectile_to_fire.firer = user
-	projectile_to_fire.fired_from = src
-	projectile_to_fire.fire()
+
+	calculated_projectile_vars = calculate_projectile_angle_and_pixel_offsets(signal_source, target, params)
+	direction_track(signal_source, target)
+	update_positioning()
 
 /obj/machinery/deployable_turret/ultimate  // Admin-only proof of concept for autoclicker automatics
 	name = "Infinity Gun"
 	view_range = 12
-
-/obj/machinery/deployable_turret/ultimate/checkfire(atom/targeted_atom, mob/user)
-	target = targeted_atom
-	if(target == user || target == get_turf(src))
-		return
-	target_turf = get_turf(target)
-	fire_helper(user)
 
 /obj/machinery/deployable_turret/hmg
 	name = "heavy machine gun turret"
 	desc = "A heavy calibre machine gun commonly used by Nanotrasen forces, famed for it's ability to give people on the recieving end more holes than normal."
 	icon_state = "hmg"
 	max_integrity = 250
-	projectile_type = /obj/projectile/bullet/manned_turret/hmg
+	mounted_gun = /obj/item/gun/ballistic/automatic/l6_saw/unrestricted
 	anchored = TRUE
-	number_of_shots = 3
 	cooldown_duration = 2 SECONDS
-	rate_of_fire = 2
-	firesound = 'sound/weapons/gun/hmg/hmg.ogg'
 	overheatsound = 'sound/weapons/gun/smg/smgrack.ogg'
 	can_be_undeployed = TRUE
 	spawned_on_undeploy = /obj/item/deployable_turret_folded
+
+	fire_rate_mult = 1.5
+	recoil_mult = 0.5
 
 /obj/item/gun_control
 	name = "turret controls"
@@ -272,7 +381,7 @@
 	. = ..()
 	. |= AFTERATTACK_PROCESSED_ITEM
 	var/modifiers = params2list(params)
-	var/obj/machinery/deployable_turret/E = user.buckled
-	E.calculated_projectile_vars = calculate_projectile_angle_and_pixel_offsets(user, targeted_atom, modifiers)
-	E.direction_track(user, targeted_atom)
-	E.checkfire(targeted_atom, user)
+	var/obj/machinery/deployable_turret/turret = user.buckled
+	turret.calculated_projectile_vars = calculate_projectile_angle_and_pixel_offsets(user, targeted_atom, modifiers)
+	turret.direction_track(user, targeted_atom)
+	turret.try_firing(targeted_atom, user, flag, params)
