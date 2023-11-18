@@ -117,6 +117,7 @@
 		/obj/item/switchblade,
 		/obj/item/pen,
 		/obj/item/scalpel,
+		/obj/item/scalpel/advanced,
 		/obj/item/reagent_containers/syringe,
 		/obj/item/dnainjector,
 		/obj/item/reagent_containers/hypospray/medipen,
