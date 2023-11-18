@@ -80,6 +80,7 @@
 		/obj/item/boxcutter,
 		/obj/item/pen,
 		/obj/item/scalpel,
+		/obj/item/scalpel/advanced,
 		/obj/item/dnainjector,
 		/obj/item/reagent_containers/syringe,
 		/obj/item/reagent_containers/pill,
